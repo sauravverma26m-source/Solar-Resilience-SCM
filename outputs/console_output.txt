@@ -1,0 +1,45 @@
+==============================================================================
+SOLAR RESILIENCE PIPELINE - console output
+==============================================================================
+
+[1] Data preparation (Table 5 check, N = 24 suppliers)
+      lead_time_cv  geo_risk  price_vol  single_source  otif_gap
+mean          0.28     0.541      0.184          0.246     0.087
+std           0.11     0.285      0.072          0.148     0.054
+min           0.12     0.100      0.065          0.040     0.012
+max           0.58     0.950      0.340          0.620     0.221
+Demand history: 54 months, Oct 2021 to Mar 2026
+
+[2] Demand forecast (damped Holt-Winters, phi = 0.92, m = 12)
+Holdout MAPE: damped HW 5.1% | undamped HW 6.6% | SARIMA 11.0%
+Tracking signal range on holdout: -1.8 to +3.0
+Module demand FY27 58.9 GW | FY28 60.6 GW ; cell requirement FY27 60.6 GW | FY28 62.4 GW
+FY27 cell requirement by fiscal quarter (GW): Q1 12.5, Q2 14.0, Q3 15.8, Q4 18.4  -> peak in Q4 (Jan-Mar)
+Base case: supply 32.4 GW (avg capacity 40.5 GW x 80%) -> FY27 deficit 28.2 GW; domestic supply covers 53% of requirement
+Sensitivity of FY27 deficit (GW):
+utilisation        0.7   0.8   0.9
+ramp                              
+Base (31->50 GW)  32.3  28.2  24.2
+Fast (31->65 GW)  27.0  22.2  17.4
+Slow (31->40 GW)  35.8  32.2  28.7
+
+[3] Supplier risk clustering (K-Means k = 3, z-scored, random_state = 0)
+Cluster sizes (low / moderate / elevated): 10 / 8 / 6
+Elevated cluster means: lead-time CV 0.40, OTIF gap 12.1%, single-source 40%
+Silhouette score 0.20 ; PCA variance explained PC1 47%, PC2 22%
+Component risk scores (geo / tariff / price / concentration):
+                    geopolitical  tariff  price  concentration
+Cells                          5       5      4              5
+Polysilicon/Wafers             5       4      4              5
+EVA                            4       3      3              4
+Glass                          3       4      3              3
+
+[4] Constrained scheduling over 12 weeks (3 lines; Line 2 down to 10 MW in weeks 5-7; HiGHS LP)
+Parameter                        Baseline    Optimised
+ALMM contract fill rate             76.5%       100.0%
+Export market fill rate             98.2%        94.8%
+Line utilisation                    99.4%       100.0%
+12-week contribution margin      496.4 Cr     518.4 Cr
+Margin uplift: +Rs 22.0 Crore (+4.4%) ; export fill change -3.4 points
+
+[5] Figures written to outputs/figures/ ; tables written to data/processed/
